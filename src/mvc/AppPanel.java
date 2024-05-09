@@ -4,113 +4,129 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+/*
+  AppPanel is the main panel for the application.
+  It contains the ControlPanel, View, Model, and AppFactory.
+ */
 public class AppPanel extends JPanel implements ActionListener, Subscriber {
-
-    protected Model model;
     protected JPanel controlPanel;
+    protected Model model;
     protected View view;
     protected AppFactory factory;
-
     private JFrame frame;
-    public static int FRAME_WIDTH = 500;
-    public static int FRAME_HEIGHT = 300;
-
+    public static int FRAME_WIDTH = 600;
+    public static int FRAME_HEIGHT = 400;
+    /*
+      Constructor for the AppPanel class.
+      Creates a JFrame and adds the AppPanel to it.
+      @param factory the factory to be used
+     */
     public AppPanel(AppFactory factory) {
-        this.factory = factory;
-        model = factory.makeModel();
-        model.subscribe(this);
-        view = factory.makeView(model);
+        this.model = factory.makeModel();
+        this.view =  factory.makeView(model);
         controlPanel = new JPanel();
 
-        setLayout(new GridLayout(1, 2));
-        add(controlPanel);
-        add(view);
+        this.factory = factory;
+        this.setLayout((new GridLayout(1, 3)));
+        this.add(controlPanel);
+        this.add(view);
+        model.subscribe(this);
 
         frame = new SafeFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Container cp = frame.getContentPane();
         cp.add(this);
-        frame.setJMenuBar(this.createMenuBar());
+        frame.setJMenuBar(createMenuBar());
         frame.setTitle(factory.getTitle());
         frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
-        frame.setVisible(true);
-    }
 
-    public void display() {
-        frame.setVisible(true);
+
     }
 
     public Model getModel() {
         return model;
     }
 
-    public void setModel(Model model) {
+    public void setModel(Model newModel) {
         this.model.unsubscribe(this);
-        this.model = model;
+        this.model = newModel;
+        view.setModel(this.model);
         model.subscribe(this);
-        view.setModel(model);
         model.changed();
     }
 
-    protected JMenuBar createMenuBar() {
-        JMenuBar result = new JMenuBar();
-        JMenu fileMenu = Utilities.makeMenu("File", new String[]{"New", "Save", "SaveAs", "Open", "Quit"}, this);
-        result.add(fileMenu);
-        JMenu editMenu = Utilities.makeMenu("Edit", factory.getEditCommands(), this);
-        result.add(editMenu);
-        JMenu helpMenu = Utilities.makeMenu("Help", new String[]{"About", "Help"}, this);
-        result.add(helpMenu);
-        return result;
-    }
-
+    /*
+      actionPerformed method for the AppPanel class.
+      Executes the command for the given ActionEvent.
+      Gets the command from the factory.
+      @param e the ActionEvent to be used
+     */
     @Override
-    public void update() {
-        repaint();
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent ae) {
+    public void actionPerformed(ActionEvent e) {
         try {
-            switch (ae.getActionCommand()) {
-                case "New" -> {
+            String cmmd = e.getActionCommand();
+            switch (cmmd) {
+                case "Save":
+                    Utilities.save(model, false);
+                    break;
+                case "SaveAs":
+                    Utilities.save(model, true);
+                    break;
+                case "Open":
+                    Model newModel = Utilities.open(model);
+                    if (newModel != null) {
+                        setModel(newModel);
+                    }
+                    break;
+                case "About":
+                    Utilities.inform(this.factory.about());
+                    break;
+                case "Help":
+                    Utilities.inform(this.factory.getHelp());
+                    break;
+                case "New":
                     Utilities.saveChanges(model);
                     setModel(factory.makeModel());
-                }
-                case "Save" -> Utilities.save(model, false);
-                case "SaveAs" -> Utilities.save(model, true);
-                case "Open" -> {
-                    Model model = Utilities.open(this.model);
-                    if (model != null) setModel(model);
-                }
-                case "Quit" -> {
+                    model.setUnsavedChanges(false);
+                    break;
+                case "Quit":
                     Utilities.saveChanges(model);
                     System.exit(0);
-                }
-                case "About" -> Utilities.inform(factory.about());
-                case "Help" -> Utilities.inform(factory.getHelp());
-                default -> {
-                    Command command = factory.makeEditCommand(model, ae.getActionCommand(), ae.getSource());
-                    if (command == null) throw new Exception("Unrecognized command " + ae.getActionCommand());
-                    command.execute();
-                }
+                    break;
+                default:
+                    Command c = factory.makeEditCommand(this.model, cmmd, this);
+                    c.execute();
             }
-        } catch (Exception e) {
-            handleException(e);
+        } catch (Exception error) {
+            Utilities.error(error);
         }
     }
-
-    protected void addButtons() {
-        for (String command : factory.getEditCommands()) {
-            JPanel p = new JPanel();
-            JButton b = new JButton(command);
-            b.addActionListener(this);
-            p.add(b);
-            controlPanel.add(p);
+    /*
+      createMenuBar method for the AppPanel class.
+      Creates a JMenuBar for the AppPanel.
+      Contains File, Edit, and Help commands from the factory.
+      @return the JMenuBar to be used
+     */
+        protected JMenuBar createMenuBar () {
+            JMenuBar result = new JMenuBar();
+            JMenu fileMenu = Utilities.makeMenu("File", new String[]{"New", "Save", "SaveAs", "Open", "Quit"}, this);
+            result.add(fileMenu);
+            JMenu editMenu = Utilities.makeMenu("Edit", factory.getEditCommands(), this);
+            result.add(editMenu);
+            JMenu helpMenu = Utilities.makeMenu("Help", new String[]{"Help","About"}, this);
+            result.add(helpMenu);
+            return result;
         }
+        protected void handleException (Exception e) {
+            Utilities.error(e);
+
+        }
+        public void display () {
+            frame.setVisible(true);
+        }
+
+        public void update () {
+        }
+
     }
 
-    protected void handleException(Exception e) {
-        Utilities.error(e);
-    }
-}
+

@@ -13,7 +13,7 @@ public class Model extends Publisher implements Serializable {
     }
     public String getFileName() {
         return this.fName;
-
+        
     }
 
     public void setFileName(String fName) {

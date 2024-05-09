@@ -21,13 +21,13 @@ public class Utilities {
 
     // tells user some info
     public static void inform(String info) {
-        JOptionPane.showMessageDialog(null, info);
+        JOptionPane.showMessageDialog(null,info);
     }
 
     // tells user a lot of info
     public static void inform(String[] items) {
         String helpString = "";
-        for (int i = 0; i < items.length; i++) {
+        for(int i = 0; i < items.length; i++) {
             helpString = helpString + "\n" + items[i];
         }
         inform(helpString);
@@ -52,8 +52,10 @@ public class Utilities {
 
     // asks user to save changes
     public static void saveChanges(Model model) {
-        if (model.getUnsavedChanges() && Utilities.confirm("current model has unsaved changes, continue?"))
+        if (model.getUnsavedChanges() &&
+                !Utilities.confirm("current model has unsaved changes, continue?")) {
             Utilities.save(model, false);
+        }
     }
 
     // asks user for a file name
@@ -66,13 +68,13 @@ public class Utilities {
         }
         if (open) {
             int returnVal = chooser.showOpenDialog(null);
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                result = chooser.getSelectedFile().getPath();
+            if(returnVal == JFileChooser.APPROVE_OPTION) {
+                result= chooser.getSelectedFile().getPath();
             }
         } else {
             int returnVal = chooser.showSaveDialog(null);
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                result = chooser.getSelectedFile().getPath();
+            if(returnVal == JFileChooser.APPROVE_OPTION) {
+                result= chooser.getSelectedFile().getPath();
             }
         }
         return result;
@@ -101,10 +103,9 @@ public class Utilities {
         saveChanges(model);
         String fName = getFileName(model.getFileName(), true);
         Model newModel = null;
-
         try {
             ObjectInputStream is = new ObjectInputStream(new FileInputStream(fName));
-            newModel = (Model) is.readObject();
+            newModel = (Model)is.readObject();
             is.close();
         } catch (Exception err) {
             Utilities.error(err);
@@ -115,7 +116,7 @@ public class Utilities {
     // simple menu maker
     public static JMenu makeMenu(String name, String[] items, ActionListener handler) {
         JMenu result = new JMenu(name);
-        for (int i = 0; i < items.length; i++) {
+        for(int i = 0; i < items.length; i++) {
             JMenuItem item = new JMenuItem(items[i]);
             item.addActionListener(handler);
             result.add(item);
@@ -131,7 +132,6 @@ public class Utilities {
     }
 
     private static int nextID = 100;
-
     public static int getID() {
         return nextID++;
     }
