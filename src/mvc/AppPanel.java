@@ -50,7 +50,7 @@ public class AppPanel extends JPanel implements ActionListener, Subscriber {
         this.model = model;
         model.subscribe(this);
         view.setModel(model);
-        model.changed(null, null, null);
+        model.changed();
     }
 
     protected JMenuBar createMenuBar() {
@@ -65,7 +65,7 @@ public class AppPanel extends JPanel implements ActionListener, Subscriber {
     }
 
     @Override
-    public void update(String name, Point oldPoint, Point newPoint) {
+    public void update() {
         repaint();
     }
 

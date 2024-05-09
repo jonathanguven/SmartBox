@@ -13,7 +13,7 @@ public class View extends JPanel implements Subscriber {
     }
 
     @Override
-    public void update(String name, Point oldPoint, Point newPoint) {
+    public void update() {
         repaint();
     }
 
