@@ -17,11 +17,13 @@ public class Container extends Model {
         return components.values();
     }
 
+    public Collection<String> getComponentNames() {
+        return components.keySet();
+    }
+
     public void addComponent(String name) throws Exception {
         String qualName = "smartbox.components." +  name;
-        Class<?> c = Class.forName(qualName);
-        Constructor<?> cons = c.getConstructor();
-        Object obj = cons.newInstance();
+        Object obj = Class.forName(qualName).getDeclaredConstructor().newInstance();
         addComponent((Component)obj);
     }
 
@@ -35,7 +37,7 @@ public class Container extends Model {
             providedInterfaces.put(intf,  component);
         }
         // update required interfaces table:
-        for (Class<?> intf: component.getRequiredInterfaces()) {
+        for(Class<?> intf: component.getRequiredInterfaces()) {
             requiredInterfaces.put(intf, component);
         }
         //find providers for the new component and hook him up:
@@ -77,7 +79,7 @@ public class Container extends Model {
         try {
             // look up component and call main if it's an App
             Component component = components.get(name);
-            if (component instanceof App) ((App)component).main();
+            if (component instanceof App) ((App) component).main();
         } catch(Exception e) {
             mvc.Utilities.error(e);
             e.printStackTrace();

@@ -33,7 +33,6 @@ public class ContainerPanel extends AppPanel {
             switch (actionCommand) {
                 case "Add":
                     cmd = factory.makeEditCommand(model, "Add", input);
-                    System.out.println("Add");
                     break;
                 case "Rem":
                     cmd = factory.makeEditCommand(model, "Rem", input);
