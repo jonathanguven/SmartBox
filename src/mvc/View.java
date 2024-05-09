@@ -1,0 +1,26 @@
+package mvc;
+
+import javax.swing.*;
+import java.awt.*;
+
+public class View extends JPanel implements Subscriber {
+
+    protected Model model;
+
+    public View(Model model) {
+        this.model = model;
+        this.model.subscribe(this);
+    }
+
+    @Override
+    public void update(String name, Point oldPoint, Point newPoint) {
+        repaint();
+    }
+
+    protected void setModel(Model model) {
+        this.model.unsubscribe(this);
+        this.model = model;
+        this.model.subscribe(this);
+        repaint();
+    }
+}
