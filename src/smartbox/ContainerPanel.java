@@ -29,21 +29,29 @@ public class ContainerPanel extends AppPanel {
         String input = JOptionPane.showInputDialog("Enter component name:");
         String actionCommand = e.getActionCommand();
         if (input != null) {
-            Command cmd;
+            Command cmd = null;
             switch (actionCommand) {
                 case "Add":
                     cmd = factory.makeEditCommand(model, "Add", input);
                     break;
                 case "Rem":
+                    if (components == null || components.getItemCount() == 0) {
+                        JOptionPane.showMessageDialog(null, "No components to remove. Add a component first.");
+                        break;
+                    }
                     cmd = factory.makeEditCommand(model, "Rem", input);
                     break;
                 case "Run":
+                    if (components == null || components.getItemCount() == 0) {
+                        JOptionPane.showMessageDialog(null, "No components to run. Add a component first.");
+                        break;
+                    }
                     cmd = factory.makeEditCommand(model, "Run", input);
                     break;
                 default:
                     throw new IllegalArgumentException("Invalid command: " + actionCommand);
             }
-            cmd.execute();
+            if (cmd != null) { cmd.execute(); }
         }
     }
 

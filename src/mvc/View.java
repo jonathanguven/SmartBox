@@ -1,26 +1,27 @@
 package mvc;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class View extends JPanel implements Subscriber {
-
     protected Model model;
-
+    /*
+    Constructor for the View class
+    @param model the model to be used
+     */
     public View(Model model) {
         this.model = model;
-        this.model.subscribe(this);
+        this.model.subscribe( this);
     }
-
     @Override
     public void update() {
-        repaint();
+        this.repaint();
     }
 
-    protected void setModel(Model model) {
+   public void setModel(Model newModel) {
         this.model.unsubscribe(this);
-        this.model = model;
+        this.model = newModel;
         this.model.subscribe(this);
-        repaint();
-    }
+
+   }
+
 }

@@ -15,9 +15,9 @@ public class ContainerView extends View {
     @Override
     public void paintComponent(java.awt.Graphics gc) {
         super.paintComponent(gc);
-        Container container = (Container) model;
+        Container c = (Container) model;
         components.removeAll();
-        for (String component : container.getComponentNames()) {
+        for (String component : c.getComponentNames()) {
             components.add(component);
         }
     }
