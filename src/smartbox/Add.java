@@ -1,4 +1,3 @@
-
 package smartbox;
 import mvc.*;
 
@@ -7,6 +6,7 @@ import javax.swing.*;
 public class Add extends Command {
     private Model model;
     private String component;
+
     public Add(Model model, Object source) {
         super(model);
         this.component = (String) source;
