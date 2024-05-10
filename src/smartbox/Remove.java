@@ -3,18 +3,18 @@ import mvc.*;
 
 public class Remove extends Command{
     private Model model;
-    private Component component;
+    private String component;
 
     public Remove(Model model, Object source) {
         super(model);
-        this.component = (Component)source;
+        this.component = (String)source;
         this.model = model;
     }
 
     public void execute() {
         if (model instanceof Container) {
             try {
-                ((Container) model).remComponent(component.name);
+                ((Container) model).remComponent(component);
             } catch (Exception e) {
                 e.printStackTrace();
             }
