@@ -10,7 +10,7 @@ public class ContainerPanel extends AppPanel {
     java.awt.List components;
     public ContainerPanel(AppFactory factory) {
         super(factory);
-
+        components = new java.awt.List(10);
         JButton addButton = new JButton("Add");
         addButton.addActionListener(this);
         controlPanel.add(addButton);
@@ -29,29 +29,31 @@ public class ContainerPanel extends AppPanel {
         String input = JOptionPane.showInputDialog("Enter component name:");
         String actionCommand = e.getActionCommand();
         if (input != null) {
-            Command cmd = null;
+            Command cmd;
             switch (actionCommand) {
                 case "Add":
                     cmd = factory.makeEditCommand(model, "Add", input);
+                    components.add(input);
                     break;
                 case "Rem":
-                    if (components == null || components.getItemCount() == 0) {
+                    cmd = factory.makeEditCommand(model, "Rem", input);
+                    if (components.getItemCount() == 0) {
                         JOptionPane.showMessageDialog(null, "No components to remove. Add a component first.");
                         break;
                     }
-                    cmd = factory.makeEditCommand(model, "Rem", input);
+                    components.remove(input);
                     break;
                 case "Run":
-                    if (components == null || components.getItemCount() == 0) {
+                    cmd = factory.makeEditCommand(model, "Run", input);
+                    if (components.getItemCount() == 0) {
                         JOptionPane.showMessageDialog(null, "No components to run. Add a component first.");
                         break;
                     }
-                    cmd = factory.makeEditCommand(model, "Run", input);
                     break;
                 default:
                     throw new IllegalArgumentException("Invalid command: " + actionCommand);
             }
-            if (cmd != null) { cmd.execute(); }
+            cmd.execute();
         }
     }
 
