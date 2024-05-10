@@ -6,7 +6,9 @@ public class StackMachine extends Component implements CommandProcessor {
 
 public IStack myStack;
 
-public StackMachine() { super(); }
+public StackMachine() {
+        super();
+}
 
 @Override
 public String execute(String cmmd) throws Exception {
