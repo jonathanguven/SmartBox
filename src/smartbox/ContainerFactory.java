@@ -27,7 +27,7 @@ public class ContainerFactory implements AppFactory {
     }
 
     public String getTitle() {
-        return "Container";
+        return "SmartBox";
     }
 
     public String[] getHelp() {
@@ -35,6 +35,6 @@ public class ContainerFactory implements AppFactory {
     }
 
     public String about() {
-        return "Container";
+        return "SmartBox version 1.0\nAuthor: Jonathan Nguyen";
     }
 }
